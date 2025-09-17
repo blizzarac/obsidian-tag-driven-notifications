@@ -30,7 +30,7 @@ export default class TagDrivenNotificationsPlugin extends Plugin {
             // Initialize services
             this.indexer = new VaultIndexer(this.app, this.settings);
             this.scheduler = new ScheduleGenerator();
-            this.dispatcher = new NotificationDispatcher(this.app, this.scheduler);
+            this.dispatcher = new NotificationDispatcher(this.app, this.scheduler, this.settings);
 
             // Load saved schedule if not in privacy mode
             if (!this.settings.privacyMode) {
@@ -416,6 +416,11 @@ export default class TagDrivenNotificationsPlugin extends Plugin {
     async saveSettings(): Promise<void> {
         await this.saveData(this.settings);
         this.updateRibbonIcon();
+        
+        // Update dispatcher settings
+        if (this.dispatcher) {
+            this.dispatcher.updateSettings(this.settings);
+        }
         
         // Re-index and rebuild schedule when settings change
         // This ensures new rules immediately take effect

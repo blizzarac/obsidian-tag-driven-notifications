@@ -57,6 +57,35 @@ export class NotificationSettingsTab extends PluginSettingTab {
                     await this.plugin.saveSettings();
                 }));
 
+        new Setting(containerEl)
+            .setName('Persistent notifications')
+            .setDesc('Keep notifications visible until manually dismissed')
+            .addToggle(toggle => toggle
+                .setValue(this.plugin.settings.persistentNotifications)
+                .onChange(async (value) => {
+                    this.plugin.settings.persistentNotifications = value;
+                    await this.plugin.saveSettings();
+                    // Update timeout setting visibility
+                    this.display();
+                }));
+
+        // Only show timeout setting if persistent notifications is enabled but not infinite
+        if (this.plugin.settings.persistentNotifications) {
+            new Setting(containerEl)
+                .setName('Notification timeout')
+                .setDesc('Time in seconds before notifications auto-dismiss (0 = never auto-dismiss)')
+                .addText(text => text
+                    .setPlaceholder('10')
+                    .setValue(String(this.plugin.settings.notificationTimeout || 10))
+                    .onChange(async (value) => {
+                        const timeout = parseInt(value);
+                        if (!isNaN(timeout) && timeout >= 0) {
+                            this.plugin.settings.notificationTimeout = timeout;
+                            await this.plugin.saveSettings();
+                        }
+                    }));
+        }
+
         // Date formats section with table
         const dateFormatsSetting = new Setting(containerEl)
             .setName('Date formats')

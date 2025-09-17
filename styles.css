@@ -3,6 +3,29 @@
  */
 
 /* =========================
+   Notification Styles
+   ========================= */
+
+/* Persistent notification styling */
+.notice.persistent-notification {
+    border: 2px solid var(--interactive-accent);
+    background: var(--background-primary-alt);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.notice.persistent-notification::before {
+    content: '📌 ';
+    font-size: 1.1em;
+    margin-right: 4px;
+}
+
+/* Make persistent notifications more prominent */
+.notice.persistent-notification:hover {
+    transform: scale(1.02);
+    transition: transform 0.2s ease;
+}
+
+/* =========================
    Status Bar Styles
    ========================= */
 

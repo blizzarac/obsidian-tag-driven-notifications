@@ -3,19 +3,21 @@
  */
 
 import { Notice, App } from 'obsidian';
-import { ScheduledOccurrence, NotificationChannel } from '../models/types';
+import { ScheduledOccurrence, NotificationChannel, NotificationPluginSettings } from '../models/types';
 import { ScheduleGenerator } from './scheduler';
 
 export class NotificationDispatcher {
     private app: App;
     private scheduler: ScheduleGenerator;
+    private settings: NotificationPluginSettings;
     private checkInterval: number | null = null;
     private isPaused: boolean = false;
     private checkIntervalMs: number = 30000; // Check every 30 seconds
 
-    constructor(app: App, scheduler: ScheduleGenerator) {
+    constructor(app: App, scheduler: ScheduleGenerator, settings: NotificationPluginSettings) {
         this.app = app;
         this.scheduler = scheduler;
+        this.settings = settings;
     }
 
     /**
@@ -107,8 +109,24 @@ export class NotificationDispatcher {
      * Fire an Obsidian in-app notification
      */
     private fireObsidianNotification(occurrence: ScheduledOccurrence): void {
-        // Create clickable notice that opens the note
-        const notice = new Notice(occurrence.message, 10000); // Show for 10 seconds
+        // Determine timeout based on settings
+        let timeout: number;
+        if (this.settings.persistentNotifications) {
+            // If persistent notifications are enabled
+            if (this.settings.notificationTimeout === 0) {
+                // 0 means infinite (Obsidian uses 0 for persistent)
+                timeout = 0;
+            } else {
+                // Use configured timeout in milliseconds
+                timeout = (this.settings.notificationTimeout || 10) * 1000;
+            }
+        } else {
+            // Default 10 seconds if not persistent
+            timeout = 10000;
+        }
+        
+        // Create clickable notice with configured timeout
+        const notice = new Notice(occurrence.message, timeout);
         
         // Add click handler to open the note
         (notice as any).noticeEl?.addEventListener('click', async () => {
@@ -121,6 +139,11 @@ export class NotificationDispatcher {
         // Add styling to make it look clickable
         if ((notice as any).noticeEl) {
             (notice as any).noticeEl.style.cursor = 'pointer';
+            
+            // Add a visual indicator if it's a persistent notification
+            if (timeout === 0) {
+                (notice as any).noticeEl.addClass('persistent-notification');
+            }
         }
     }
 
@@ -222,5 +245,12 @@ export class NotificationDispatcher {
             return 'unsupported';
         }
         return Notification.permission;
+    }
+
+    /**
+     * Update settings reference
+     */
+    updateSettings(settings: NotificationPluginSettings): void {
+        this.settings = settings;
     }
 }
