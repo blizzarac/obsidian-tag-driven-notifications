@@ -1,0 +1,191 @@
+# WARP.md
+
+This file provides guidance to WARP (warp.dev) when working with code in this repository.
+
+## Project Overview
+
+This is an Obsidian plugin that generates smart notifications from dates in notes using customizable rules and offsets. It parses YAML frontmatter and inline tags to extract dates, then applies user-configured notification rules globally from plugin settings.
+
+## Development Environment
+
+- **Test Vault Location**: `/Users/alexanderstolz/Dropbox/Apps/zettelkasten/`
+- **Plugin Installation Path**: `.obsidian/plugins/tag-driven-notifications/`
+- **Node Version**: Use Node 18+ (TypeScript 5.9.2 required)
+- **Package Manager**: npm
+
+## Essential Commands
+
+### Build & Development
+```bash
+# Install dependencies
+npm install
+
+# Development mode with hot reload
+npm run dev
+# or use the convenience script
+./dev.sh
+
+# Production build
+npm run build
+
+# Type checking (without emitting files)
+tsc -noEmit -skipLibCheck
+```
+
+### Testing in Obsidian
+1. Build the plugin: `npm run build`
+2. Files are automatically generated: `main.js`, `styles.css` 
+3. Reload Obsidian or use the "Reload without saving" command (Cmd+R on Mac)
+4. Check Developer Console for debug output (Cmd+Option+I)
+
+### Version Management
+```bash
+# Bump version (updates manifest.json and versions.json)
+npm run version
+```
+
+## Architecture & Code Structure
+
+### Core Services Pattern
+The plugin uses a service-oriented architecture with clear separation of concerns:
+
+1. **VaultIndexer** (`src/services/indexer.ts`): Scans vault for dates in frontmatter/tags
+2. **ScheduleGenerator** (`src/services/scheduler.ts`): Builds notification schedule from indexed data and rules
+3. **NotificationDispatcher** (`src/services/dispatcher.ts`): Manages the notification firing mechanism
+
+### Plugin Lifecycle
+1. **Initialization** (`main.ts::onload()`):
+   - Loads settings from disk
+   - Initializes services
+   - Waits for workspace ready
+   - Performs initial vault indexing
+   - Builds notification schedule
+   - Starts dispatcher with 2-second delay to prevent file watch loops
+
+2. **File Watching**: 
+   - Monitors vault changes (create/modify/delete/rename)
+   - Uses debouncing to prevent rebuild loops
+   - Skips events during initialization phase
+
+3. **State Management**:
+   - Schedule persisted to `.obsidian/plugins/tag-driven-notifications/data.json`
+   - Privacy mode option keeps schedule in memory only
+
+### Key Data Models (`src/models/types.ts`)
+
+```typescript
+interface NotificationRule {
+  field: string;              // Field/tag to watch
+  defaultTime?: string;       // HH:MM format
+  offsets: string[];          // ISO 8601 durations
+  repeat: RepeatPattern;      // none/daily/weekly/monthly/yearly
+  messageTemplate: string;    // With {title}, {field}, {date} placeholders
+  channels: NotificationChannel[];
+}
+
+interface ScheduledOccurrence {
+  ruleField: string;
+  notePath: string;
+  occurrence: string;         // ISO datetime
+  fired: boolean;
+}
+```
+
+### UI Components
+- **Settings Tab** (`src/ui/settings-tab.ts`): Rules configuration table
+- **Upcoming Modal** (`src/ui/upcoming-modal.ts`): Preview scheduled notifications
+- **Ribbon Icon**: Quick pause/resume access
+- **Status Bar**: Shows notification count and status
+
+## Important Implementation Details
+
+### Date Parsing
+- Supports multiple formats configured in settings
+- ISO 8601 preferred, falls back to locale formats
+- Inline tags use format: `#tagname:YYYY-MM-DDTHH:MM`
+
+### ISO 8601 Duration Format
+Offsets use standard duration format:
+- `-P1D`: 1 day before
+- `-PT2H`: 2 hours before  
+- `-P1W`: 1 week before
+- `+P1D`: 1 day after
+
+### Notification Channels
+1. **Obsidian**: Uses `Notice` API for in-app notifications
+2. **System**: Browser notifications (requires permission)
+
+### File Watch Loop Prevention
+- Initial 2-second delay after plugin load before enabling file watching
+- Debounced schedule rebuilds (prevents rapid successive rebuilds)
+- `isInitializing` flag to skip events during startup
+
+## Build System (esbuild)
+
+Configuration in `esbuild.config.mjs`:
+- Bundles all TypeScript into single `main.js`
+- Externals: Obsidian API, CodeMirror, Node builtins
+- Target: ES2018 for Obsidian compatibility
+- Source maps: Inline in development, none in production
+
+## Common Development Tasks
+
+### Adding a New Notification Rule Field
+1. Update `NotificationRule` interface in `src/models/types.ts`
+2. Add UI controls in `src/ui/settings-tab.ts`
+3. Update rule processing in `src/services/scheduler.ts`
+4. Test with sample notes in test vault
+
+### Debugging Notification Timing
+1. Enable debug mode in settings
+2. Check console for schedule generation logs
+3. Use "Show upcoming notifications" command
+4. Verify date parsing with various formats
+
+### Modifying Message Templates
+- Template processor in `src/services/dispatcher.ts`
+- Available placeholders defined in `formatMessage()` method
+- Add new placeholders by extracting from note metadata
+
+## Plugin Requirements
+
+The plugin must adhere to requirements specified in `obsidian-notification-plugin-requirements-with-ui.md`:
+- Settings-based rule configuration (not per-note YAML)
+- Support for frontmatter fields and inline tags
+- ISO 8601 duration offsets
+- Multiple notification channels
+- Privacy mode option
+
+## Integration Points
+
+### Obsidian APIs Used
+- `Plugin` base class for lifecycle
+- `TFile` for file operations
+- `MetadataCache` for frontmatter/tag extraction
+- `Notice` for in-app notifications
+- `Setting` for UI components
+- `Modal` for upcoming notifications display
+
+### Event Subscriptions
+- `vault.on('modify')`: File content changes
+- `vault.on('create')`: New files
+- `vault.on('delete')`: Removed files
+- `vault.on('rename')`: Moved/renamed files
+- `metadataCache.on('changed')`: Metadata updates
+
+## Performance Considerations
+
+- Vault indexing is async and can be CPU-intensive for large vaults
+- Schedule generation uses efficient date arithmetic
+- Notification checking runs every 30 seconds (configurable)
+- Debounced rebuilds prevent excessive processing
+
+## Project-Specific Rules
+
+When modifying this codebase:
+1. Maintain TypeScript strict mode compatibility
+2. Preserve the service-oriented architecture pattern
+3. Keep UI components in `src/ui/` directory
+4. Ensure all date operations handle timezone correctly
+5. Test with various date formats and edge cases
+6. Verify notification firing with actual time progression
