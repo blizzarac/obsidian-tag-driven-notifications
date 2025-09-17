@@ -317,6 +317,18 @@ export default class TagDrivenNotificationsPlugin extends Plugin {
 
     private setupStatusBar(): void {
         this.statusBarItem = this.addStatusBarItem();
+        
+        // Make status bar item clickable
+        this.statusBarItem.addClass('mod-clickable');
+        this.statusBarItem.style.cursor = 'pointer';
+        this.statusBarItem.addEventListener('click', () => {
+            const upcoming = this.scheduler.getUpcomingOccurrences(20);
+            new UpcomingNotificationsModal(this.app, upcoming, this.dispatcher).open();
+        });
+        
+        // Add hover tooltip
+        this.statusBarItem.setAttribute('title', 'Click to view upcoming notifications');
+        
         this.updateStatusBar();
     }
 
@@ -329,8 +341,10 @@ export default class TagDrivenNotificationsPlugin extends Plugin {
 
         if (isPaused) {
             this.statusBarItem.setText(`🔕 Notifications paused (${scheduleSize} scheduled)`);
+            this.statusBarItem.setAttribute('title', 'Click to view upcoming notifications (currently paused)');
         } else {
             this.statusBarItem.setText(`🔔 ${upcomingCount} upcoming`);
+            this.statusBarItem.setAttribute('title', `Click to view ${upcomingCount} upcoming notifications`);
         }
     }
 

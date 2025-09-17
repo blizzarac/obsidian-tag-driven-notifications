@@ -3,6 +3,21 @@
  */
 
 /* =========================
+   Status Bar Styles
+   ========================= */
+
+/* Make the status bar item appear clickable */
+.status-bar-item.mod-clickable {
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.status-bar-item.mod-clickable:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+}
+
+/* =========================
    Common Settings Styles
    ========================= */
 
