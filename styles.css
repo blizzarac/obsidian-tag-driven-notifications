@@ -6,6 +6,74 @@
    Notification Styles
    ========================= */
 
+/* Notification with action buttons */
+.notice.notification-with-actions {
+    padding: 12px !important;
+    min-width: 300px;
+}
+
+.notification-message {
+    margin-bottom: 8px;
+    font-size: 14px;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+.notification-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--background-modifier-border);
+}
+
+/* Notification buttons */
+.notification-btn {
+    padding: 4px 12px;
+    font-size: 12px;
+    background: var(--interactive-normal);
+    color: var(--text-normal);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.notification-btn:hover {
+    background: var(--interactive-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.notification-btn:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+.notification-btn-open {
+    background: var(--interactive-accent);
+    color: var(--text-on-accent);
+    border-color: var(--interactive-accent);
+}
+
+.notification-btn-open:hover {
+    background: var(--interactive-accent-hover);
+    border-color: var(--interactive-accent-hover);
+}
+
+.notification-btn-dismiss {
+    background: transparent;
+    color: var(--text-muted);
+    border-color: var(--background-modifier-border);
+}
+
+.notification-btn-dismiss:hover {
+    background: var(--background-modifier-hover);
+    color: var(--text-normal);
+}
+
 /* Persistent notification styling */
 .notice.persistent-notification {
     border: 2px solid var(--interactive-accent);
@@ -13,16 +81,10 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.notice.persistent-notification::before {
+.notice.persistent-notification .notification-message::before {
     content: '📌 ';
     font-size: 1.1em;
     margin-right: 4px;
-}
-
-/* Make persistent notifications more prominent */
-.notice.persistent-notification:hover {
-    transform: scale(1.02);
-    transition: transform 0.2s ease;
 }
 
 /* =========================

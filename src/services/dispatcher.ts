@@ -128,21 +128,61 @@ export class NotificationDispatcher {
         // Create clickable notice with configured timeout
         const notice = new Notice(occurrence.message, timeout);
         
-        // Add click handler to open the note
-        (notice as any).noticeEl?.addEventListener('click', async () => {
-            const file = this.app.vault.getAbstractFileByPath(occurrence.notePath);
-            if (file) {
-                await this.app.workspace.openLinkText(occurrence.notePath, '', false);
-            }
-        });
-
-        // Add styling to make it look clickable
+        // Customize the notice element
         if ((notice as any).noticeEl) {
-            (notice as any).noticeEl.style.cursor = 'pointer';
+            const noticeEl = (notice as any).noticeEl;
+            
+            // Add container for content and buttons
+            noticeEl.empty();
+            noticeEl.addClass('notification-with-actions');
+            
+            // Create message container
+            const messageContainer = noticeEl.createDiv({ cls: 'notification-message' });
+            messageContainer.setText(occurrence.message);
+            
+            // Create actions container
+            const actionsContainer = noticeEl.createDiv({ cls: 'notification-actions' });
+            
+            // Add "Open Note" button if there's a note path
+            if (occurrence.notePath) {
+                const openButton = actionsContainer.createEl('button', {
+                    text: '📄 Open',
+                    cls: 'notification-btn notification-btn-open'
+                });
+                openButton.onclick = async (e: MouseEvent) => {
+                    e.stopPropagation();
+                    const file = this.app.vault.getAbstractFileByPath(occurrence.notePath);
+                    if (file) {
+                        await this.app.workspace.openLinkText(occurrence.notePath, '', false);
+                    }
+                    notice.hide();
+                };
+            }
+            
+            // Add dismiss button
+            const dismissButton = actionsContainer.createEl('button', {
+                text: '✕ Dismiss',
+                cls: 'notification-btn notification-btn-dismiss'
+            });
+            dismissButton.onclick = (e: MouseEvent) => {
+                e.stopPropagation();
+                notice.hide();
+            };
+            
+            // Make the whole notification clickable (except buttons)
+            messageContainer.style.cursor = 'pointer';
+            messageContainer.onclick = async () => {
+                if (occurrence.notePath) {
+                    const file = this.app.vault.getAbstractFileByPath(occurrence.notePath);
+                    if (file) {
+                        await this.app.workspace.openLinkText(occurrence.notePath, '', false);
+                    }
+                }
+            };
             
             // Add a visual indicator if it's a persistent notification
             if (timeout === 0) {
-                (notice as any).noticeEl.addClass('persistent-notification');
+                noticeEl.addClass('persistent-notification');
             }
         }
     }
