@@ -179,41 +179,12 @@ repeat: yearly
 message: 💍 Anniversary reminder: {title}
 ```
 
-## 🐛 Troubleshooting
-
-### Notifications Not Firing
-
-1. Check that notifications are not paused (ribbon icon)
-2. Verify your rules are enabled in settings
-3. Ensure dates are in supported formats
-4. For system notifications, check browser permissions
-
-### Dates Not Being Detected
-
-1. Verify the field/tag name matches your rule exactly
-2. Check that the date format is supported
-3. Run "Re-index vault" command
-4. Enable debug mode to see detailed logs
-
-### System Notifications Not Working
-
-1. Run "Request system notification permission" command
-2. Check browser notification settings
-3. Ensure Obsidian has notification permissions in your OS
-
 ## 🔒 Privacy & Security
 
 - All data is stored locally in your vault
 - No external services or APIs are used
 - Privacy mode available for sensitive vaults
 - Schedule can be encrypted with vault encryption
-
-## 🚧 Limitations
-
-- System notifications require browser support
-- Date parsing limited to configured formats
-- Large vaults may take time to index initially
-- Maximum check interval is 30 seconds
 
 ## 📝 Development
 
@@ -258,28 +229,6 @@ Contributions are welcome! Please:
 ## 📄 License
 
 MIT License - see LICENSE file for details
-
-## 🙏 Acknowledgments
-
-- Built for the amazing Obsidian community
-- Inspired by various reminder and notification plugins
-- Uses Obsidian's powerful plugin API
-
-## 📮 Support
-
-- **Issues**: [GitHub Issues](https://github.com/yourusername/obsidian-tag-driven-notifications/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/obsidian-tag-driven-notifications/discussions)
-
-## 🗺️ Roadmap
-
-- [ ] Natural language date parsing
-- [ ] Email notification channel
-- [ ] Notification templates library
-- [ ] Bulk rule import/export
-- [ ] Integration with calendar plugins
-- [ ] Mobile app support
-- [ ] Custom notification sounds
-- [ ] Snooze functionality
 
 ---
 
