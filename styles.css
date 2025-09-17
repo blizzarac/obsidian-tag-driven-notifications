@@ -1,0 +1,617 @@
+/**
+ * Styles for Tag-Driven Notifications Plugin
+ */
+
+/* =========================
+   Common Settings Styles
+   ========================= */
+
+.notification-settings-section {
+    margin-bottom: 30px;
+}
+
+.notification-settings-section h2 {
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--background-modifier-border);
+}
+
+/* Standardized table styles for all settings tables */
+.notification-settings-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 15px 0;
+    background-color: var(--background-secondary);
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.notification-settings-table th {
+    text-align: left;
+    padding: 10px 12px;
+    background-color: var(--background-primary-alt);
+    border-bottom: 2px solid var(--background-modifier-border);
+    font-weight: 600;
+    font-size: 0.9em;
+    color: var(--text-normal);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.notification-settings-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--background-modifier-border);
+    color: var(--text-normal);
+}
+
+.notification-settings-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.notification-settings-table tbody tr:hover {
+    background-color: var(--background-modifier-hover);
+}
+
+/* Standardized empty state */
+.notification-empty-state {
+    padding: 30px;
+    text-align: center;
+    color: var(--text-muted);
+    font-style: italic;
+    background-color: var(--background-secondary);
+    border: 2px dashed var(--background-modifier-border);
+    border-radius: 6px;
+    margin: 15px 0;
+}
+
+/* Standardized action buttons */
+.notification-action-btn {
+    padding: 2px 8px;
+    font-size: 0.9em;
+    background-color: var(--background-primary);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin: 0 2px;
+}
+
+.notification-action-btn:hover {
+    background-color: var(--interactive-hover);
+    border-color: var(--interactive-accent);
+}
+
+.notification-action-btn:active {
+    transform: translateY(1px);
+}
+
+/* Standardized list container */
+.notification-list-container {
+    margin: 15px 0;
+    padding: 12px;
+    background-color: var(--background-secondary);
+    border-radius: 6px;
+    border: 1px solid var(--background-modifier-border);
+}
+
+/* Standardized list items */
+.notification-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    background-color: var(--background-primary);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.notification-list-item:last-child {
+    margin-bottom: 0;
+}
+
+.notification-list-item:hover {
+    background-color: var(--background-modifier-hover);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.notification-list-item-content {
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+.notification-list-item-actions {
+    display: flex;
+    gap: 4px;
+}
+
+/* Standardized code/monospace display */
+.notification-code {
+    padding: 2px 6px;
+    background-color: var(--code-background);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 3px;
+    font-family: var(--font-monospace);
+    font-size: 0.9em;
+}
+
+/* Standardized help text */
+.notification-help-box {
+    margin-top: 15px;
+    padding: 12px;
+    background-color: var(--background-primary-alt);
+    border-left: 3px solid var(--interactive-accent);
+    border-radius: 4px;
+    font-size: 0.9em;
+    line-height: 1.6;
+}
+
+.notification-help-box code {
+    padding: 1px 4px;
+    background-color: var(--code-background);
+    border-radius: 2px;
+}
+
+/* =========================
+   Specific Component Styles
+   ========================= */
+
+/* Rules Table Specific Styles */
+.notification-rules-table {
+    /* Inherits from .notification-settings-table */
+}
+
+.notification-no-rules {
+    /* Inherits from .notification-empty-state */
+}
+
+.notification-offset-chips {
+    display: inline-block;
+    padding: 2px 6px;
+    background-color: var(--background-secondary);
+    border-radius: 3px;
+    font-size: 0.9em;
+    font-family: var(--font-monospace);
+}
+
+.notification-channels {
+    display: inline-block;
+    padding: 2px 6px;
+    background-color: var(--background-primary-alt);
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+
+.notification-actions {
+    white-space: nowrap;
+}
+
+.notification-actions button {
+    margin-right: 4px;
+    padding: 2px 8px;
+    font-size: 0.9em;
+    background-color: var(--background-secondary);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.notification-actions button:hover {
+    background-color: var(--background-modifier-hover);
+}
+
+.notification-toggle {
+    font-weight: bold;
+}
+
+.notification-toggle.enabled {
+    color: var(--text-accent);
+}
+
+.notification-toggle.disabled {
+    color: var(--text-muted);
+}
+
+/* Rule Editor Modal Styles */
+.offsets-container {
+    margin-top: 10px;
+}
+
+.offset-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.offset-item input {
+    flex: 1;
+    margin-right: 8px;
+}
+
+.offset-item button {
+    padding: 2px 8px;
+    background-color: var(--background-modifier-error);
+    color: var(--text-on-accent);
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.channels-container {
+    margin: 10px 0;
+}
+
+.channels-container label {
+    display: inline-block;
+    cursor: pointer;
+}
+
+.channels-container input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+.modal-button-container {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* Upcoming Notifications Modal Styles */
+.upcoming-list {
+    max-height: 400px;
+    overflow-y: auto;
+    margin: 15px 0;
+}
+
+.upcoming-item {
+    padding: 12px;
+    margin-bottom: 10px;
+    background-color: var(--background-secondary);
+    border-radius: 6px;
+    border: 1px solid var(--background-modifier-border);
+}
+
+.upcoming-item:hover {
+    background-color: var(--background-modifier-hover);
+}
+
+.upcoming-time {
+    margin-bottom: 8px;
+}
+
+.upcoming-time strong {
+    color: var(--text-accent);
+}
+
+.upcoming-relative {
+    color: var(--text-muted);
+    font-size: 0.9em;
+}
+
+.upcoming-message {
+    font-size: 1.1em;
+    margin-bottom: 8px;
+    color: var(--text-normal);
+}
+
+.upcoming-meta {
+    font-size: 0.9em;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.upcoming-note-link {
+    color: var(--text-accent);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.upcoming-note-link:hover {
+    text-decoration: underline;
+}
+
+.upcoming-field,
+.upcoming-channels {
+    margin-left: 5px;
+}
+
+.upcoming-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.upcoming-fire-now {
+    padding: 4px 10px;
+    background-color: var(--interactive-accent);
+    color: var(--text-on-accent);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+.upcoming-fire-now:hover {
+    background-color: var(--interactive-accent-hover);
+}
+
+.upcoming-fire-now:disabled {
+    background-color: var(--background-modifier-border);
+    color: var(--text-muted);
+    cursor: not-allowed;
+}
+
+.upcoming-empty {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 40px 20px;
+    font-style: italic;
+}
+
+.upcoming-footer {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid var(--background-modifier-border);
+    text-align: center;
+}
+
+.upcoming-summary {
+    color: var(--text-muted);
+    font-size: 0.9em;
+    margin-bottom: 10px;
+}
+
+/* Ribbon Icon Styles */
+.notification-paused {
+    opacity: 0.5;
+}
+
+.notification-paused::after {
+    content: '⏸';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    font-size: 10px;
+    background-color: var(--background-primary);
+    border-radius: 2px;
+    padding: 0 2px;
+}
+
+/* Status Bar Styles */
+.status-bar-item.notification-status {
+    cursor: pointer;
+}
+
+.status-bar-item.notification-status:hover {
+    background-color: var(--background-modifier-hover);
+}
+
+/* Notice Styles */
+.notice.notification-clickable {
+    cursor: pointer;
+}
+
+.notice.notification-clickable:hover {
+    background-color: var(--background-modifier-hover);
+}
+
+/* Date Formats Table Styles */
+.date-formats-container {
+    margin: 10px 0;
+}
+
+.date-formats-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.date-formats-table th {
+    text-align: left;
+    padding: 8px;
+    border-bottom: 2px solid var(--background-modifier-border);
+    font-weight: 600;
+    color: var(--text-normal);
+}
+
+.date-formats-table td {
+    padding: 8px;
+    border-bottom: 1px solid var(--background-modifier-border);
+    color: var(--text-normal);
+}
+
+.date-formats-table tr:hover {
+    background-color: var(--background-modifier-hover);
+}
+
+.date-formats-table code {
+    padding: 2px 4px;
+    background-color: var(--code-background);
+    border-radius: 3px;
+    font-family: var(--font-monospace);
+}
+
+.date-format-example {
+    color: var(--text-accent);
+}
+
+.date-format-error {
+    color: var(--text-error);
+    font-style: italic;
+}
+
+.date-format-actions button {
+    margin-right: 4px;
+    padding: 2px 8px;
+    font-size: 0.9em;
+    background-color: var(--background-secondary);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.date-format-actions button:hover {
+    background-color: var(--background-modifier-hover);
+}
+
+.date-formats-empty {
+    padding: 20px;
+    text-align: center;
+    color: var(--text-muted);
+    font-style: italic;
+    border: 1px dashed var(--background-modifier-border);
+    border-radius: 4px;
+}
+
+.date-formats-help {
+    line-height: 1.6;
+}
+
+.date-formats-help code {
+    padding: 1px 3px;
+    background-color: var(--code-background);
+    border-radius: 2px;
+    font-size: 0.9em;
+}
+
+/* Date Format Modal Styles */
+.date-format-preview {
+    line-height: 1.5;
+}
+
+.date-format-quick-btn {
+    text-align: left;
+    background-color: var(--background-secondary);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.date-format-quick-btn:hover {
+    background-color: var(--background-modifier-hover);
+}
+
+.date-format-quick-btn code {
+    font-size: 0.85em;
+    color: var(--text-normal);
+}
+
+/* Folder Lists Styles */
+.folders-list,
+.included-folders-container,
+.excluded-folders-container {
+    margin: 10px 0;
+}
+
+.folders-list {
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 4px;
+    padding: 8px;
+    background-color: var(--background-secondary);
+}
+
+.folder-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    margin-bottom: 4px;
+    background-color: var(--background-primary);
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.folder-item:last-child {
+    margin-bottom: 0;
+}
+
+.folder-item:hover {
+    background-color: var(--background-modifier-hover);
+}
+
+.folder-path {
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+.folder-path code {
+    padding: 2px 6px;
+    background-color: var(--code-background);
+    border-radius: 3px;
+    font-family: var(--font-monospace);
+    margin-left: 4px;
+}
+
+.folder-not-found {
+    color: var(--text-error);
+    font-size: 0.85em;
+    font-style: italic;
+    margin-left: 8px;
+}
+
+.folder-actions {
+    display: flex;
+    gap: 4px;
+}
+
+.folder-actions button {
+    padding: 2px 8px;
+    font-size: 0.9em;
+    background-color: var(--background-secondary);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.folder-actions button:hover {
+    background-color: var(--background-modifier-hover);
+}
+
+.folders-list-empty {
+    padding: 20px;
+    text-align: center;
+    color: var(--text-muted);
+    font-style: italic;
+    border: 1px dashed var(--background-modifier-border);
+    border-radius: 4px;
+}
+
+/* Folder Picker Modal Styles */
+.folder-picker {
+    margin-top: 15px;
+}
+
+.folder-picker-list {
+    background-color: var(--background-primary);
+}
+
+.folder-picker-item {
+    user-select: none;
+    transition: background-color 0.1s;
+}
+
+.folder-picker-item code {
+    font-size: 0.9em;
+}
+
+.folder-picker-empty {
+    padding: 20px;
+    text-align: center;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.folder-preview {
+    line-height: 1.5;
+}
+
+.folder-preview code {
+    padding: 2px 4px;
+    background-color: var(--code-background);
+    border-radius: 2px;
+}

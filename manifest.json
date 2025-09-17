@@ -1,0 +1,10 @@
+{
+  "id": "tag-driven-notifications",
+  "name": "Tag-Driven Notifications",
+  "version": "1.0.0",
+  "minAppVersion": "0.15.0",
+  "description": "Generate date-based notifications from tags and frontmatter fields with configurable rules and offsets",
+  "author": "Alexander Stolz",
+  "authorUrl": "",
+  "isDesktopOnly": false
+}
