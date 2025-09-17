@@ -221,7 +221,7 @@ message: 💍 Anniversary reminder: {title}
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/obsidian-tag-driven-notifications.git
+git clone https://github.com/blizzarac/obsidian-tag-driven-notifications.git
 
 # Install dependencies
 npm install
