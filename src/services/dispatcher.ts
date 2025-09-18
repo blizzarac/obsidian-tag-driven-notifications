@@ -5,6 +5,7 @@
 import { Notice, App } from 'obsidian';
 import { ScheduledOccurrence, NotificationChannel, NotificationPluginSettings } from '../models/types';
 import { ScheduleGenerator } from './scheduler';
+import { Logger } from '../utils/logger';
 
 export class NotificationDispatcher {
     private app: App;
@@ -28,7 +29,7 @@ export class NotificationDispatcher {
             return; // Already running
         }
 
-        console.log('Starting notification dispatcher...');
+        Logger.debug('Starting notification dispatcher');
         this.checkInterval = window.setInterval(() => {
             if (!this.isPaused) {
                 this.checkAndFireNotifications();
@@ -46,7 +47,7 @@ export class NotificationDispatcher {
         if (this.checkInterval) {
             window.clearInterval(this.checkInterval);
             this.checkInterval = null;
-            console.log('Notification dispatcher stopped');
+            Logger.debug('Notification dispatcher stopped');
         }
     }
 
@@ -55,7 +56,7 @@ export class NotificationDispatcher {
      */
     pause(): void {
         this.isPaused = true;
-        console.log('Notifications paused');
+        Logger.debug('Notifications paused');
     }
 
     /**
@@ -63,7 +64,7 @@ export class NotificationDispatcher {
      */
     resume(): void {
         this.isPaused = false;
-        console.log('Notifications resumed');
+        Logger.debug('Notifications resumed');
         // Check immediately after resuming
         this.checkAndFireNotifications();
     }
@@ -102,7 +103,7 @@ export class NotificationDispatcher {
             }
         }
 
-        console.log(`Fired notification: ${occurrence.message}`);
+        Logger.debug(`Fired notification: ${occurrence.message}`);
     }
 
     /**
@@ -193,7 +194,7 @@ export class NotificationDispatcher {
     private fireSystemNotification(occurrence: ScheduledOccurrence): void {
         // Check if browser notifications are supported and permitted
         if (!('Notification' in window)) {
-            console.log('Browser does not support notifications');
+            Logger.warn('Browser does not support notifications');
             return;
         }
 

@@ -9,6 +9,7 @@ import { ScheduleGenerator } from './src/services/scheduler';
 import { NotificationDispatcher } from './src/services/dispatcher';
 import { NotificationSettingsTab } from './src/ui/settings-tab';
 import { UpcomingNotificationsModal } from './src/ui/upcoming-modal';
+import { Logger } from './src/utils/logger';
 
 export default class TagDrivenNotificationsPlugin extends Plugin {
     settings: NotificationPluginSettings;
@@ -22,10 +23,12 @@ export default class TagDrivenNotificationsPlugin extends Plugin {
 
     async onload() {
         try {
-            console.log('Loading Tag-Driven Notifications plugin');
-
-            // Load settings
+            // Load settings first
             await this.loadSettings();
+            
+            // Initialize logger with settings
+            Logger.setSettings(this.settings);
+            Logger.info('Plugin loading started');
 
             // Initialize services
             this.indexer = new VaultIndexer(this.app, this.settings);
@@ -55,7 +58,7 @@ export default class TagDrivenNotificationsPlugin extends Plugin {
             // Initial indexing and schedule build
             this.app.workspace.onLayoutReady(async () => {
                 try {
-                    console.log('Tag-Driven Notifications: Workspace ready, performing initial index...');
+                    Logger.debug('Workspace ready, performing initial index');
                     
                     // Always perform initial indexing on plugin load
                     await this.indexer.indexVault();
@@ -74,26 +77,26 @@ export default class TagDrivenNotificationsPlugin extends Plugin {
                     // Mark initialization as complete AFTER everything is done
                     setTimeout(() => {
                         this.isInitializing = false;
-                        console.log('Tag-Driven Notifications: Initialization complete, file watching enabled');
+                        Logger.debug('Initialization complete, file watching enabled');
                     }, 2000); // Wait 2 seconds before enabling file watching
                     
-                    console.log('Tag-Driven Notifications: Initial setup complete');
+                    Logger.debug('Initial setup complete');
                 } catch (error) {
-                    console.error('Tag-Driven Notifications: Error during initial setup:', error);
+                    Logger.error('Error during initial setup', error);
                     new Notice('Tag-Driven Notifications: Error during startup. Check console.');
                     this.isInitializing = false; // Ensure we exit initialization mode even on error
                 }
             });
 
-            console.log('Tag-Driven Notifications plugin loaded');
+            Logger.info('Plugin loaded successfully');
         } catch (error) {
-            console.error('Tag-Driven Notifications: Fatal error during plugin load:', error);
+            Logger.error('Fatal error during plugin load', error);
             new Notice('Tag-Driven Notifications failed to load. Please check the console.');
         }
     }
 
     onunload() {
-        console.log('Unloading Tag-Driven Notifications plugin');
+        Logger.info('Plugin unloading');
         
         // Stop dispatcher
         this.dispatcher.stop();
@@ -368,7 +371,7 @@ export default class TagDrivenNotificationsPlugin extends Plugin {
         
         // Set a new timer to rebuild after 1 second of no changes
         this.rebuildDebounceTimer = setTimeout(async () => {
-            console.log('Tag-Driven Notifications: Debounced rebuild triggered');
+            Logger.debug('Debounced rebuild triggered');
             await this.rebuildSchedule();
         }, 1000);
     }
@@ -376,28 +379,27 @@ export default class TagDrivenNotificationsPlugin extends Plugin {
     async rebuildSchedule(): Promise<void> {
         // Don't rebuild during initialization
         if (this.isInitializing) {
-            console.log('Tag-Driven Notifications: Skipping rebuild during initialization');
+            Logger.debug('Skipping rebuild during initialization');
             return;
         }
         
-        console.log('Tag-Driven Notifications: Rebuilding schedule...');
-        console.log('Current rules:', this.settings.rules);
+        Logger.debug('Rebuilding schedule', `Rules: ${this.settings.rules.length}`);
 
         // Index vault if not already indexed
         const index = this.indexer.getIndex();
-        console.log(`Current index size: ${index.notes.size} notes`);
+        Logger.debug(`Current index size: ${index.notes.size} notes`);
         
         if (index.notes.size === 0) {
-            console.log('Index is empty, performing full vault index...');
+            Logger.debug('Index is empty, performing full vault index');
             await this.indexer.indexVault();
             const newIndex = this.indexer.getIndex();
-            console.log(`After indexing: ${newIndex.notes.size} notes found`);
+            Logger.debug(`After indexing: ${newIndex.notes.size} notes found`);
         }
 
         // Generate schedule
         this.scheduler.generateSchedule(this.settings.rules, this.indexer.getIndex());
         const scheduleSize = this.scheduler.getScheduleSize();
-        console.log(`Schedule rebuilt: ${scheduleSize} occurrences generated`);
+        Logger.debug(`Schedule rebuilt: ${scheduleSize} occurrences generated`);
 
         // Update status bar
         this.updateStatusBar();
@@ -416,7 +418,8 @@ export default class TagDrivenNotificationsPlugin extends Plugin {
         await this.saveData(this.settings);
         this.updateRibbonIcon();
         
-        // Update dispatcher settings
+        // Update logger and dispatcher settings
+        Logger.setSettings(this.settings);
         if (this.dispatcher) {
             this.dispatcher.updateSettings(this.settings);
         }
@@ -424,7 +427,7 @@ export default class TagDrivenNotificationsPlugin extends Plugin {
         // Re-index and rebuild schedule when settings change
         // This ensures new rules immediately take effect
         if (!this.isInitializing) {
-            console.log('Tag-Driven Notifications: Settings changed, rebuilding schedule...');
+            Logger.debug('Settings changed, rebuilding schedule');
             await this.rebuildSchedule();
         }
     }
@@ -434,12 +437,10 @@ export default class TagDrivenNotificationsPlugin extends Plugin {
             const data = await this.loadData();
             if (data && data.schedule) {
                 this.scheduler.importSchedule(data.schedule);
-                if (this.settings.debugMode) {
-                    console.log(`Loaded ${data.schedule.length} scheduled occurrences`);
-                }
+                Logger.debug(`Loaded ${data.schedule.length} scheduled occurrences`);
             }
         } catch (error) {
-            console.error('Failed to load schedule:', error);
+            Logger.error('Failed to load schedule', error);
         }
     }
 
@@ -449,11 +450,9 @@ export default class TagDrivenNotificationsPlugin extends Plugin {
             const data = await this.loadData() || {};
             data.schedule = schedule;
             await this.saveData(data);
-            if (this.settings.debugMode) {
-                console.log(`Saved ${schedule.length} scheduled occurrences`);
-            }
+            Logger.debug(`Saved ${schedule.length} scheduled occurrences`);
         } catch (error) {
-            console.error('Failed to save schedule:', error);
+            Logger.error('Failed to save schedule', error);
         }
     }
 }

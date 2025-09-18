@@ -5,6 +5,7 @@
 import { App, TFile, CachedMetadata, FrontMatterCache, Notice } from 'obsidian';
 import { ExtractedDate, NoteIndex, VaultIndex, NotificationPluginSettings } from '../models/types';
 import { parseDate, parseInlineTagDate } from '../utils/date-utils';
+import { Logger } from '../utils/logger';
 
 export class VaultIndexer {
     private app: App;
@@ -33,18 +34,18 @@ export class VaultIndexer {
      */
     async indexVault(): Promise<VaultIndex> {
         if (this.indexingInProgress) {
-            console.log('Indexing already in progress');
+            Logger.debug('Indexing already in progress');
             return this.index;
         }
 
         this.indexingInProgress = true;
-        console.log('Starting vault indexing...');
+        Logger.debug('Starting vault indexing');
 
         try {
             const files = this.app.vault.getMarkdownFiles();
             const filteredFiles = this.filterFiles(files);
             
-            console.log(`Found ${filteredFiles.length} markdown files to index`);
+            Logger.debug(`Found ${filteredFiles.length} markdown files to index`);
 
             // Process files in batches to avoid blocking
             const batchSize = 10;
@@ -59,10 +60,10 @@ export class VaultIndexer {
             }
 
             this.index.lastIndexed = Date.now();
-            console.log(`Indexed ${this.index.notes.size} notes with date fields`);
+            Logger.debug(`Indexed ${this.index.notes.size} notes with date fields`);
             
         } catch (error) {
-            console.error('Error indexing vault:', error);
+            Logger.error('Error indexing vault', error);
         } finally {
             this.indexingInProgress = false;
         }
@@ -93,7 +94,7 @@ export class VaultIndexer {
             this.index.notes.set(file.path, noteIndex);
             return noteIndex;
         } catch (error) {
-            console.error(`Error indexing file ${file.path}:`, error);
+            Logger.error(`Error indexing file ${file.path}`, error);
             return null;
         }
     }

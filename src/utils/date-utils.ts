@@ -3,6 +3,7 @@
  */
 
 import { moment } from 'obsidian';
+import { Logger } from './logger';
 
 /**
  * Parse a date string using multiple formats
@@ -196,7 +197,7 @@ export function calculateFireTimes(
             const fireTime = applyISO8601Duration(baseDate, offset);
             fireTimes.push(fireTime);
         } catch (e) {
-            console.error(`Failed to apply offset ${offset}:`, e);
+            Logger.error(`Failed to apply offset ${offset}`, e);
         }
     }
 
