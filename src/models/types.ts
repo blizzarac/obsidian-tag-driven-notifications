@@ -85,7 +85,6 @@ export interface NotificationPluginSettings {
     excludedTags: string[];          // Tags to ignore
     privacyMode: boolean;            // Don't save schedule to disk
     notificationsPaused: boolean;
-    debugMode: boolean;
     persistentNotifications: boolean; // Keep notifications visible until dismissed
     notificationTimeout?: number;     // Timeout in seconds (0 = infinite)
 }
@@ -104,7 +103,6 @@ export const DEFAULT_SETTINGS: NotificationPluginSettings = {
     excludedTags: [],
     privacyMode: false,
     notificationsPaused: false,
-    debugMode: false,
     persistentNotifications: false,
     notificationTimeout: 10  // Default 10 seconds, 0 for infinite
 };

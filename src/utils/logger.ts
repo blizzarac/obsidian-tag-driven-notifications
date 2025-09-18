@@ -1,24 +1,16 @@
 /**
  * Logger utility for Tag-Driven Notifications Plugin
- * Controls console output based on debug mode setting
+ * Production logging - minimal console output
  */
 
-import { NotificationPluginSettings } from '../models/types';
-
 export class Logger {
-    private static settings: NotificationPluginSettings | null = null;
-
-    static setSettings(settings: NotificationPluginSettings): void {
-        Logger.settings = settings;
-    }
-
     /**
-     * Log debug messages (only shown when debug mode is enabled)
+     * Log debug messages (disabled in production)
      */
     static debug(message: string, ...args: any[]): void {
-        if (Logger.settings?.debugMode) {
-            console.log(`[Tag-Driven Notifications] ${message}`, ...args);
-        }
+        // Debug messages are disabled in production to keep console clean
+        // Developers can uncomment the line below for debugging:
+        // console.log(`[Tag-Driven Notifications] ${message}`, ...args);
     }
 
     /**

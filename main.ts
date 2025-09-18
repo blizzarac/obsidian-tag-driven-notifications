@@ -26,8 +26,6 @@ export default class TagDrivenNotificationsPlugin extends Plugin {
             // Load settings first
             await this.loadSettings();
             
-            // Initialize logger with settings
-            Logger.setSettings(this.settings);
             Logger.info('Plugin loading started');
 
             // Initialize services
@@ -418,8 +416,7 @@ export default class TagDrivenNotificationsPlugin extends Plugin {
         await this.saveData(this.settings);
         this.updateRibbonIcon();
         
-        // Update logger and dispatcher settings
-        Logger.setSettings(this.settings);
+        // Update dispatcher settings
         if (this.dispatcher) {
             this.dispatcher.updateSettings(this.settings);
         }

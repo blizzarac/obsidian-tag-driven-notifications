@@ -294,16 +294,6 @@ export class NotificationSettingsTab extends PluginSettingTab {
                     this.plugin.settings.privacyMode = value;
                     await this.plugin.saveSettings();
                 }));
-
-        new Setting(containerEl)
-            .setName('Debug mode')
-            .setDesc('Enable detailed console logging')
-            .addToggle(toggle => toggle
-                .setValue(this.plugin.settings.debugMode)
-                .onChange(async (value) => {
-                    this.plugin.settings.debugMode = value;
-                    await this.plugin.saveSettings();
-                }));
     }
 
     private openRuleEditor(rule: Rule | null): void {
