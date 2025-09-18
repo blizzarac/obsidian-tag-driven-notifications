@@ -811,17 +811,32 @@ class RuleEditorModal extends Modal {
         // Add placeholder guide
         const placeholderGuide = examplesContainer.createEl('div', { cls: 'placeholder-guide' });
         
-        placeholderGuide.innerHTML = `
-            <strong>Available Placeholders:</strong><br>
-            <span style="font-family: var(--font-monospace);">
-            • <code>{title}</code> - Note title or filename<br>
-            • <code>{field}</code> - Field/tag name (e.g., "birthday", "due")<br>
-            • <code>{date}</code> - The original date from the note<br>
-            • <code>{path}</code> - Full path to the note<br>
-            </span>
-            <br>
-            <em style="color: var(--text-muted);">💡 Tip: Use emojis to make notifications more visual!</em>
-        `;
+        // Create title
+        placeholderGuide.createEl('strong', { text: 'Available Placeholders:' });
+        placeholderGuide.createEl('br');
+        
+        // Create placeholder list
+        const placeholderList = placeholderGuide.createEl('div', { cls: 'placeholder-list' });
+        
+        const placeholders = [
+            { placeholder: '{title}', desc: 'Note title or filename' },
+            { placeholder: '{field}', desc: 'Field/tag name (e.g., "birthday", "due")' },
+            { placeholder: '{date}', desc: 'The original date from the note' },
+            { placeholder: '{path}', desc: 'Full path to the note' }
+        ];
+        
+        placeholders.forEach(p => {
+            const item = placeholderList.createEl('div', { cls: 'placeholder-item' });
+            item.createEl('span', { text: '• ' });
+            item.createEl('code', { text: p.placeholder });
+            item.createEl('span', { text: ` - ${p.desc}` });
+        });
+        
+        placeholderGuide.createEl('br');
+        placeholderGuide.createEl('em', { 
+            text: '💡 Tip: Use emojis to make notifications more visual!',
+            cls: 'placeholder-tip'
+        });
         
         messageTemplateSetting.addTextArea(text => text
             .setPlaceholder('Type your message or click an example above...')
@@ -1144,12 +1159,19 @@ class DateFormatModal extends Modal {
                 .replace(/HH/g, hours)
                 .replace(/mm/g, minutes);
             
-            previewDiv.innerHTML = `
-                <strong>Preview:</strong> ${preview || '(enter a format)'}<br>
-                <span style="color: var(--text-muted); font-size: 0.9em;">
-                Current date/time: ${now.toLocaleString()}
-                </span>
-            `;
+            // Clear and rebuild preview content
+            previewDiv.empty();
+            
+            // Preview line
+            const previewLine = previewDiv.createEl('div');
+            previewLine.createEl('strong', { text: 'Preview: ' });
+            previewLine.createEl('span', { text: preview || '(enter a format)' });
+            
+            // Current date/time line
+            previewDiv.createEl('div', {
+                text: `Current date/time: ${now.toLocaleString()}`,
+                cls: 'date-preview-current'
+            });
         };
         
         this.updatePreview = updatePreview;

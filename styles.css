@@ -172,6 +172,19 @@
     font-size: 0.85em;
 }
 
+.placeholder-list {
+    font-family: var(--font-monospace);
+    margin: 4px 0;
+}
+
+.placeholder-item {
+    margin: 2px 0;
+}
+
+.placeholder-tip {
+    color: var(--text-muted);
+}
+
 /* Channel toggles */
 .system-channel-toggle {
     margin-left: 20px;
@@ -257,6 +270,13 @@
     display: block;
     font-size: 0.9em;
     color: var(--text-muted);
+}
+
+/* Date format preview elements */
+.date-preview-current {
+    color: var(--text-muted);
+    font-size: 0.9em;
+    margin-top: 4px;
 }
 
 /* =========================
