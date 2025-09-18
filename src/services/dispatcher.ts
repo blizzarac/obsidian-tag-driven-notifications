@@ -170,7 +170,7 @@ export class NotificationDispatcher {
             };
             
             // Make the whole notification clickable (except buttons)
-            messageContainer.style.cursor = 'pointer';
+            messageContainer.addClass('notification-clickable');
             messageContainer.onclick = async () => {
                 if (occurrence.notePath) {
                     const file = this.app.vault.getAbstractFileByPath(occurrence.notePath);

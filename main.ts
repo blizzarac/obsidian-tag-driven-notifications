@@ -320,7 +320,6 @@ export default class TagDrivenNotificationsPlugin extends Plugin {
         
         // Make status bar item clickable
         this.statusBarItem.addClass('mod-clickable');
-        this.statusBarItem.style.cursor = 'pointer';
         this.statusBarItem.addEventListener('click', () => {
             const upcoming = this.scheduler.getUpcomingOccurrences(20);
             new UpcomingNotificationsModal(this.app, upcoming, this.dispatcher).open();

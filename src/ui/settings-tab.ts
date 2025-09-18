@@ -426,13 +426,6 @@ export class NotificationSettingsTab extends PluginSettingTab {
             };
         });
         
-        // Add common format examples below the table
-        const helpDiv = container.createEl('div', { cls: 'date-formats-help' });
-        helpDiv.style.marginTop = '10px';
-        helpDiv.style.padding = '8px';
-        helpDiv.style.backgroundColor = 'var(--background-secondary)';
-        helpDiv.style.borderRadius = '4px';
-        helpDiv.style.fontSize = '0.85em';
     }
     
     private getDateFormatExample(format: string, date: Date): string {
@@ -765,14 +758,11 @@ class RuleEditorModal extends Modal {
         
         // Add examples section
         const examplesContainer = messageTemplateSetting.settingEl.createDiv({ cls: 'message-template-examples' });
-        examplesContainer.style.marginBottom = '10px';
         
         const examplesTitle = examplesContainer.createEl('div', { 
             text: '📝 Template Examples (click to use):',
-            cls: 'setting-item-description'
+            cls: 'setting-item-description template-examples-title'
         });
-        examplesTitle.style.marginBottom = '8px';
-        examplesTitle.style.fontWeight = '500';
         
         const examples = [
             { template: '🎂 {title}\'s birthday is coming!', desc: 'Birthday reminder' },
@@ -786,37 +776,20 @@ class RuleEditorModal extends Modal {
         ];
         
         const examplesList = examplesContainer.createEl('div', { cls: 'template-examples-list' });
-        examplesList.style.display = 'grid';
-        examplesList.style.gridTemplateColumns = 'repeat(2, 1fr)';
-        examplesList.style.gap = '4px';
         
         examples.forEach(example => {
             const exampleItem = examplesList.createEl('div', { 
                 cls: 'template-example-item'
             });
-            exampleItem.style.padding = '4px 8px';
-            exampleItem.style.backgroundColor = 'var(--background-secondary)';
-            exampleItem.style.borderRadius = '4px';
-            exampleItem.style.cursor = 'pointer';
-            exampleItem.style.fontSize = '0.85em';
             
-            const exampleText = exampleItem.createEl('code', { text: example.template });
-            exampleText.style.display = 'block';
-            exampleText.style.marginBottom = '2px';
+            const exampleText = exampleItem.createEl('code', { 
+                text: example.template,
+                cls: 'template-example-code'
+            });
             
             const exampleDesc = exampleItem.createEl('span', { 
                 text: example.desc,
                 cls: 'template-example-desc'
-            });
-            exampleDesc.style.color = 'var(--text-muted)';
-            exampleDesc.style.fontSize = '0.9em';
-            
-            exampleItem.addEventListener('mouseenter', () => {
-                exampleItem.style.backgroundColor = 'var(--background-modifier-hover)';
-            });
-            
-            exampleItem.addEventListener('mouseleave', () => {
-                exampleItem.style.backgroundColor = 'var(--background-secondary)';
             });
             
             exampleItem.addEventListener('click', () => {
@@ -827,9 +800,9 @@ class RuleEditorModal extends Modal {
                     this.rule.messageTemplate = example.template;
                     
                     // Flash to indicate selection
-                    exampleItem.style.backgroundColor = 'var(--interactive-accent)';
+                    exampleItem.addClass('template-example-selected');
                     setTimeout(() => {
-                        exampleItem.style.backgroundColor = 'var(--background-secondary)';
+                        exampleItem.removeClass('template-example-selected');
                     }, 200);
                 }
             });
@@ -837,11 +810,6 @@ class RuleEditorModal extends Modal {
         
         // Add placeholder guide
         const placeholderGuide = examplesContainer.createEl('div', { cls: 'placeholder-guide' });
-        placeholderGuide.style.marginTop = '10px';
-        placeholderGuide.style.padding = '8px';
-        placeholderGuide.style.backgroundColor = 'var(--background-primary-alt)';
-        placeholderGuide.style.borderRadius = '4px';
-        placeholderGuide.style.fontSize = '0.85em';
         
         placeholderGuide.innerHTML = `
             <strong>Available Placeholders:</strong><br>
@@ -875,8 +843,7 @@ class RuleEditorModal extends Modal {
         obsidianCheckbox.onchange = () => this.updateChannels();
         obsidianToggle.createSpan({ text: ' Obsidian (in-app)' });
         
-        const systemToggle = channelContainer.createEl('label');
-        systemToggle.style.marginLeft = '20px';
+        const systemToggle = channelContainer.createEl('label', { cls: 'system-channel-toggle' });
         const systemCheckbox = systemToggle.createEl('input', { type: 'checkbox' });
         systemCheckbox.checked = this.rule.channels.includes('system');
         systemCheckbox.onchange = () => this.updateChannels();
@@ -1000,12 +967,6 @@ class FolderSelectionModal extends Modal {
         
         // Create scrollable list
         const folderList = folderListDiv.createDiv({ cls: 'folder-picker-list' });
-        folderList.style.maxHeight = '300px';
-        folderList.style.overflowY = 'auto';
-        folderList.style.border = '1px solid var(--background-modifier-border)';
-        folderList.style.borderRadius = '4px';
-        folderList.style.padding = '8px';
-        folderList.style.marginTop = '8px';
         
         if (folders.length === 0) {
             folderList.createEl('div', {
@@ -1015,13 +976,10 @@ class FolderSelectionModal extends Modal {
         } else {
             folders.forEach(folder => {
                 const folderItem = folderList.createDiv({ cls: 'folder-picker-item' });
-                folderItem.style.padding = '4px 8px';
-                folderItem.style.cursor = 'pointer';
-                folderItem.style.borderRadius = '3px';
                 
                 // Indent based on depth
                 const depth = folder.split('/').length - 1;
-                folderItem.style.paddingLeft = `${8 + depth * 16}px`;
+                folderItem.style.setProperty('--folder-depth', depth.toString());
                 
                 // Folder icon and name
                 folderItem.createEl('span', { text: '📁 ' });
@@ -1029,22 +987,8 @@ class FolderSelectionModal extends Modal {
                 
                 // Highlight if selected
                 if (folder === this.folderPath) {
-                    folderItem.style.backgroundColor = 'var(--interactive-accent)';
-                    folderItem.style.color = 'var(--text-on-accent)';
+                    folderItem.addClass('folder-picker-selected');
                 }
-                
-                // Hover effect
-                folderItem.addEventListener('mouseenter', () => {
-                    if (folder !== this.folderPath) {
-                        folderItem.style.backgroundColor = 'var(--background-modifier-hover)';
-                    }
-                });
-                
-                folderItem.addEventListener('mouseleave', () => {
-                    if (folder !== this.folderPath) {
-                        folderItem.style.backgroundColor = '';
-                    }
-                });
                 
                 // Click to select
                 folderItem.addEventListener('click', () => {
@@ -1057,16 +1001,11 @@ class FolderSelectionModal extends Modal {
 
         // Preview
         const previewDiv = contentEl.createDiv({ cls: 'folder-preview' });
-        previewDiv.style.marginTop = '15px';
-        previewDiv.style.padding = '10px';
-        previewDiv.style.backgroundColor = 'var(--background-secondary)';
-        previewDiv.style.borderRadius = '4px';
         this.previewDiv = previewDiv;
         this.updatePreview();
 
         // Buttons
         const buttonContainer = contentEl.createDiv({ cls: 'modal-button-container' });
-        buttonContainer.style.marginTop = '20px';
         
         const cancelButton = buttonContainer.createEl('button', { text: 'Cancel' });
         cancelButton.onclick = () => this.close();
@@ -1092,14 +1031,19 @@ class FolderSelectionModal extends Modal {
         
         if (this.folderPath) {
             const exists = this.checkFolderExists(this.folderPath);
-            this.previewDiv.innerHTML = `
-                <strong>Selected:</strong> <code>${this.folderPath}</code><br>
-                <span style="color: ${exists ? 'var(--text-success)' : 'var(--text-error)'};">
-                ${exists ? '✓ Folder exists' : '⚠️ Folder not found (will be created if needed)'}
-                </span>
-            `;
+            this.previewDiv.empty();
+            
+            const selectedText = this.previewDiv.createEl('div');
+            selectedText.createEl('strong', { text: 'Selected: ' });
+            selectedText.createEl('code', { text: this.folderPath });
+            
+            const statusSpan = this.previewDiv.createEl('span', {
+                text: exists ? '✓ Folder exists' : '⚠️ Folder not found (will be created if needed)',
+                cls: exists ? 'folder-status-success' : 'folder-status-error'
+            });
         } else {
-            this.previewDiv.innerHTML = '<em>No folder selected</em>';
+            this.previewDiv.empty();
+            this.previewDiv.createEl('em', { text: 'No folder selected' });
         }
     }
 
@@ -1108,11 +1052,9 @@ class FolderSelectionModal extends Modal {
         container.querySelectorAll('.folder-picker-item').forEach(item => {
             const codeEl = item.querySelector('code');
             if (codeEl && codeEl.textContent === selectedFolder) {
-                (item as HTMLElement).style.backgroundColor = 'var(--interactive-accent)';
-                (item as HTMLElement).style.color = 'var(--text-on-accent)';
+                (item as HTMLElement).addClass('folder-picker-selected');
             } else {
-                (item as HTMLElement).style.backgroundColor = '';
-                (item as HTMLElement).style.color = '';
+                (item as HTMLElement).removeClass('folder-picker-selected');
             }
         });
         this.updatePreview();
@@ -1186,10 +1128,6 @@ class DateFormatModal extends Modal {
 
         // Live preview
         const previewDiv = contentEl.createDiv({ cls: 'date-format-preview' });
-        previewDiv.style.marginTop = '10px';
-        previewDiv.style.padding = '10px';
-        previewDiv.style.backgroundColor = 'var(--background-secondary)';
-        previewDiv.style.borderRadius = '4px';
         
         const updatePreview = () => {
             const now = new Date();
@@ -1219,7 +1157,6 @@ class DateFormatModal extends Modal {
 
         // Quick format buttons
         const quickFormatsDiv = contentEl.createDiv({ cls: 'date-format-quick' });
-        quickFormatsDiv.style.marginTop = '15px';
         
         quickFormatsDiv.createEl('div', { 
             text: 'Quick formats (click to use):',
@@ -1235,26 +1172,22 @@ class DateFormatModal extends Modal {
             { format: 'yyyy/MM/dd', desc: 'Japanese' }
         ];
         
-        const buttonsContainer = quickFormatsDiv.createDiv();
-        buttonsContainer.style.display = 'grid';
-        buttonsContainer.style.gridTemplateColumns = 'repeat(3, 1fr)';
-        buttonsContainer.style.gap = '5px';
-        buttonsContainer.style.marginTop = '5px';
+        const buttonsContainer = quickFormatsDiv.createDiv({ cls: 'date-format-buttons-grid' });
         
         quickFormats.forEach(qf => {
             const btn = buttonsContainer.createEl('button', { 
                 cls: 'date-format-quick-btn'
             });
-            btn.style.padding = '4px 8px';
-            btn.style.fontSize = '0.85em';
             
-            const codeSpan = btn.createEl('code', { text: qf.format });
-            codeSpan.style.display = 'block';
+            const codeSpan = btn.createEl('code', { 
+                text: qf.format,
+                cls: 'date-format-quick-code'
+            });
             
-            const descSpan = btn.createEl('span', { text: qf.desc });
-            descSpan.style.display = 'block';
-            descSpan.style.fontSize = '0.9em';
-            descSpan.style.color = 'var(--text-muted)';
+            const descSpan = btn.createEl('span', { 
+                text: qf.desc,
+                cls: 'date-format-quick-desc'
+            });
             
             btn.onclick = () => {
                 this.format = qf.format;
@@ -1265,7 +1198,6 @@ class DateFormatModal extends Modal {
 
         // Buttons
         const buttonContainer = contentEl.createDiv({ cls: 'modal-button-container' });
-        buttonContainer.style.marginTop = '20px';
         
         const cancelButton = buttonContainer.createEl('button', { text: 'Cancel' });
         cancelButton.onclick = () => this.close();
