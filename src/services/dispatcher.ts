@@ -6,6 +6,7 @@ import { Notice, App } from 'obsidian';
 import { ScheduledOccurrence, NotificationChannel, NotificationPluginSettings } from '../models/types';
 import { ScheduleGenerator } from './scheduler';
 import { Logger } from '../utils/logger';
+import { hasNoticeEl } from '../types/obsidian-extensions';
 
 export class NotificationDispatcher {
     private app: App;
@@ -130,8 +131,8 @@ export class NotificationDispatcher {
         const notice = new Notice(occurrence.message, timeout);
         
         // Customize the notice element
-        if ((notice as any).noticeEl) {
-            const noticeEl = (notice as any).noticeEl;
+        if (hasNoticeEl(notice)) {
+            const noticeEl = notice.noticeEl;
             
             // Add container for content and buttons
             noticeEl.empty();

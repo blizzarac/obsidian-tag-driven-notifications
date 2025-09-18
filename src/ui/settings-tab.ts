@@ -5,6 +5,7 @@
 import { App, PluginSettingTab, Setting, Modal, TextComponent, ButtonComponent, Notice } from 'obsidian';
 import TagDrivenNotificationsPlugin from '../../main';
 import { Rule, NotificationChannel, RepeatPattern, RuleValidator } from '../models/types';
+import { hasChildren, ExtendedFolder } from '../types/obsidian-extensions';
 
 export class NotificationSettingsTab extends PluginSettingTab {
     plugin: TagDrivenNotificationsPlugin;
@@ -1054,12 +1055,12 @@ class FolderSelectionModal extends Modal {
 
     private updateFolderSelection(container: HTMLElement, selectedFolder: string): void {
         // Update visual selection
-        container.querySelectorAll('.folder-picker-item').forEach(item => {
+        container.querySelectorAll<HTMLElement>('.folder-picker-item').forEach(item => {
             const codeEl = item.querySelector('code');
             if (codeEl && codeEl.textContent === selectedFolder) {
-                (item as HTMLElement).addClass('folder-picker-selected');
+                item.addClass('folder-picker-selected');
             } else {
-                (item as HTMLElement).removeClass('folder-picker-selected');
+                item.removeClass('folder-picker-selected');
             }
         });
         this.updatePreview();
@@ -1069,10 +1070,10 @@ class FolderSelectionModal extends Modal {
         const folders: string[] = [];
         const rootFolder = this.app.vault.getRoot();
         
-        const collectFolders = (folder: any, path: string = '') => {
+        const collectFolders = (folder: ExtendedFolder, path: string = '') => {
             if (folder.children) {
-                folder.children.forEach((child: any) => {
-                    if (child.children !== undefined) { // It's a folder
+                folder.children.forEach((child) => {
+                    if (hasChildren(child)) { // It's a folder
                         const folderPath = path ? `${path}/${child.name}` : child.name;
                         folders.push(folderPath);
                         collectFolders(child, folderPath);
@@ -1081,7 +1082,9 @@ class FolderSelectionModal extends Modal {
             }
         };
         
-        collectFolders(rootFolder);
+        if (hasChildren(rootFolder)) {
+            collectFolders(rootFolder);
+        }
         return folders.sort();
     }
 
