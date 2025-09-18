@@ -1,6 +1,6 @@
 {
   "name": "obsidian-tag-driven-notifications",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Obsidian plugin for date-based notifications from tags and frontmatter fields",
   "main": "main.js",
   "scripts": {
