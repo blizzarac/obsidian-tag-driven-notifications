@@ -56,7 +56,7 @@ export default class TagDrivenNotificationsPlugin extends Plugin {
             // Initial indexing and schedule build
             this.app.workspace.onLayoutReady(async () => {
                 try {
-                    Logger.debug('Workspace ready, performing initial index');
+                    Logger.info('Workspace ready, performing initial index');
                     
                     // Always perform initial indexing on plugin load
                     await this.indexer.indexVault();
@@ -78,7 +78,7 @@ export default class TagDrivenNotificationsPlugin extends Plugin {
                         Logger.debug('Initialization complete, file watching enabled');
                     }, 2000); // Wait 2 seconds before enabling file watching
                     
-                    Logger.debug('Initial setup complete');
+                    Logger.info('Initial setup complete');
                 } catch (error) {
                     Logger.error('Error during initial setup', error);
                     new Notice('Tag-Driven Notifications: Error during startup. Check console.');
@@ -397,7 +397,7 @@ export default class TagDrivenNotificationsPlugin extends Plugin {
         // Generate schedule
         this.scheduler.generateSchedule(this.settings.rules, this.indexer.getIndex());
         const scheduleSize = this.scheduler.getScheduleSize();
-        Logger.debug(`Schedule rebuilt: ${scheduleSize} occurrences generated`);
+        Logger.info(`Schedule rebuilt: ${scheduleSize} occurrences generated`);
 
         // Update status bar
         this.updateStatusBar();
