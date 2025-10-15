@@ -3,7 +3,7 @@
  */
 
 import { Rule, ScheduledOccurrence, VaultIndex, TemplateContext } from '../models/types';
-import { calculateFireTimes, formatDate, getNextOccurrence, isInPast } from '../utils/date-utils';
+import { calculateFireTimes, formatDate, getNextOccurrence, isInPast, normalizeYearForRecurring } from '../utils/date-utils';
 
 export class ScheduleGenerator {
     private schedule: Map<string, ScheduledOccurrence> = new Map();
@@ -50,9 +50,15 @@ export class ScheduleGenerator {
     ): ScheduledOccurrence[] {
         const occurrences: ScheduledOccurrence[] = [];
         
+        // If ignoreYear is enabled, normalize the date to current/next year
+        let dateToUse = originalDate;
+        if (rule.ignoreYear) {
+            dateToUse = normalizeYearForRecurring(originalDate);
+        }
+        
         // Calculate fire times with offsets
         const fireTimes = calculateFireTimes(
-            originalDate,
+            dateToUse,
             rule.offsets,
             rule.defaultTime || '09:00',
             rule.repeat

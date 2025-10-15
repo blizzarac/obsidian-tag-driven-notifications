@@ -175,6 +175,27 @@ export function getRelativeTime(date: Date): string {
 }
 
 /**
+ * Normalize a date by updating its year to the current or next year
+ * This is useful for recurring events like birthdays where we want to 
+ * ignore the original year and always use the current/upcoming occurrence
+ */
+export function normalizeYearForRecurring(date: Date): Date {
+    const m = moment(date);
+    const now = moment();
+    const currentYear = now.year();
+    
+    // Set to current year
+    m.year(currentYear);
+    
+    // If the date has already passed this year, move to next year
+    if (m.isBefore(now)) {
+        m.add(1, 'year');
+    }
+    
+    return m.toDate();
+}
+
+/**
  * Calculate all fire times for a rule and date
  */
 export function calculateFireTimes(

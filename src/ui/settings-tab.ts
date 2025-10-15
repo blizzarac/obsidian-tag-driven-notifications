@@ -620,7 +620,8 @@ export class NotificationSettingsTab extends PluginSettingTab {
                 repeat: 'yearly',
                 messageTemplate: '🎂 {title}\'s birthday is tomorrow!',
                 channels: ['obsidian', 'system'],
-                enabled: true
+                enabled: true,
+                ignoreYear: true
             },
             {
                 id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-2`,
@@ -650,7 +651,8 @@ export class NotificationSettingsTab extends PluginSettingTab {
                 repeat: 'yearly',
                 messageTemplate: '💍 Anniversary reminder: {title} - {date}',
                 channels: ['obsidian'],
-                enabled: true
+                enabled: true,
+                ignoreYear: true
             }
         ];
 
@@ -740,6 +742,16 @@ class RuleEditorModal extends Modal {
                 .setValue(this.rule.repeat)
                 .onChange((value: RepeatPattern) => {
                     this.rule.repeat = value;
+                }));
+
+        // Ignore Year Toggle
+        new Setting(contentEl)
+            .setName('Ignore year')
+            .setDesc('Update date to current/next year (useful for birthdays and anniversaries)')
+            .addToggle(toggle => toggle
+                .setValue(this.rule.ignoreYear || false)
+                .onChange(value => {
+                    this.rule.ignoreYear = value;
                 }));
 
         // Message Template

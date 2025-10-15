@@ -24,6 +24,7 @@ export interface Rule {
     messageTemplate: string;     // e.g., "🎂 {title}'s birthday"
     channels: NotificationChannel[];
     enabled: boolean;
+    ignoreYear?: boolean;        // If true, updates date to current/next year (useful for birthdays)
 }
 
 /**
